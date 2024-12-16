@@ -1,0 +1,25 @@
+{
+  "name": "usemultiplestate",
+  "version": "1.0.0",
+  "description": "A custom React hook to manage multiple states",
+  "main": "src/useMultipleState.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fiderosado/UseMultipleState.git"
+  },
+  "keywords": [
+    "react",
+    "hooks",
+    "state-management",
+    "useState"
+  ],
+  "author": "Fidel Remedios Rosado",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fiderosado/UseMultipleState/issues"
+  },
+  "homepage": "https://github.com/fiderosado/UseMultipleState#readme"
+}
