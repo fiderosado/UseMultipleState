@@ -43,6 +43,21 @@ The `getAll` method returns an object with all current states, ideal for debuggi
 const allStates = getAll();
 console.log(allStates); // { quantity: 0, price: 0 }
 ```
+Changes made:
+Modified getAll:
+Now accepts an optional array (keys).
+If keys is undefined, returns all states as before.
+If keys is an array, filters states based on the provided keys.
+Throws an error if a key does not exist in the current states.
+
+```javascript
+// Get a subset of states
+const subset = getAll(["name", "city"]); // { name: "Bob", city: "NY" }
+
+// Get all states
+const allStates = getAll(); // { name: "Bob", age: 25, city: "NY" }
+```
+With this modification, the functionality is flexible and can handle both all keys and a specific subset of them.
 
 ### 5. Key validation
 

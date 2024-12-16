@@ -44,6 +44,23 @@ const allStates = getAll();
 console.log(allStates); // { quantity: 0, price: 0 }
 ```
 
+Cambios realizados:
+Modificación de getAll:
+Ahora acepta un array opcional (keys).
+Si keys es undefined, devuelve todos los estados como antes.
+Si keys es un array, filtra los estados según las claves proporcionadas.
+Lanza un error si una clave no existe en los estados actuales.
+
+
+```javascript
+  // Obtener un subconjunto de estados
+const subset = getAll(["name", "city"]); // { name: "Bob", city: "NY" }
+
+// Obtener todos los estados
+const allStates = getAll(); // { name: "Bob", age: 25, city: "NY" }
+```
+Con esta modificación, la funcionalidad es flexible y puede manejar tanto todas las claves como un subconjunto específico de ellas.
+
 ### 5. Validación de claves
 
 Si intentas acceder o actualizar un estado que no existe, se lanza un error descriptivo para evitar comportamientos inesperados:
