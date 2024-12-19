@@ -1,30 +1,67 @@
 import { useState } from "react";
 
 function useMultipleState(initialStates) {
-
-    // Almacenamos el estado como un objeto clave-valor
     const [states, setStates] = useState(initialStates);
-
-    // Creamos una función para actualizar estados específicos
+    
     const getStateManager = (key) => ({
-        get: () => states[key], // Obtener el valor actual del estado
+        get: () => (key ? states[key] : { ...states }),
         put: (valueOrUpdater) => {
-            setStates((prev) => ({
-                ...prev,
-                [key]:
-                    typeof valueOrUpdater === "function"
-                        ? valueOrUpdater(prev[key]) // Si es una función, actualizamos con el resultado
-                        : valueOrUpdater, // Si no, actualizamos directamente con el valor
-            }));
+            setStates((prev) => {
+                if (key) {
+                    const currentValue = prev[key];
+                    let newValue;
+                    
+                    if (typeof valueOrUpdater === "function") {
+                        newValue = valueOrUpdater(currentValue);
+                    } else if (
+                        typeof currentValue === "object" &&
+                        currentValue !== null &&
+                        typeof valueOrUpdater === "object" &&
+                        valueOrUpdater !== null
+                    ) {
+                        // Mezclar objetos
+                        newValue = { ...currentValue, ...valueOrUpdater };
+                    } else {
+                        newValue = valueOrUpdater;
+                    }
+                    
+                    return {
+                        ...prev,
+                        [key]: newValue,
+                    };
+                } else {
+                    // Actualizar múltiples claves
+                    if (
+                        typeof valueOrUpdater !== "object" ||
+                        valueOrUpdater === null
+                    ) {
+                        throw new Error(
+                            "Para actualizar todo el estado, debe proporcionarse un objeto o Clave de objeto para actualizar una especifica."
+                        );
+                    }
+                    
+                    const validUpdates = Object.keys(valueOrUpdater).reduce(
+                        (result, updateKey) => {
+                            if (updateKey in prev) {
+                                result[updateKey] = valueOrUpdater[updateKey];
+                            }
+                            return result;
+                        },
+                        {}
+                    );
+                    
+                    return {
+                        ...prev,
+                        ...validUpdates,
+                    };
+                }
+            });
         },
     });
-
-    // Función para obtener todos los estados actuales
-    /*const getAll = () => ({ ...states });*/
-
+    
     const getAll = (keys) => {
         if (!keys) {
-            return { ...states }; // Si no se pasan claves, devolvemos todos los estados
+            return { ...states };
         }
         if (!Array.isArray(keys)) {
             throw new Error("La entrada a getAll debe ser un array de claves.");
@@ -38,11 +75,10 @@ function useMultipleState(initialStates) {
             return result;
         }, {});
     };
-
-    // Retornamos una función que permite gestionar estados individuales
+    
     return {
-        state : (key) => {
-            if (!(key in states)) {
+        state: (key) => {
+            if (key && !(key in states)) {
                 throw new Error(`El estado con clave "${key}" no existe.`);
             }
             return getStateManager(key);
