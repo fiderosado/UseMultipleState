@@ -104,4 +104,4 @@ function useMultipleState (initialStates) {
   }
 }
 
-module.exports = useMultipleState
+module.exports.default = useMultipleState
