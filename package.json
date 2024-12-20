@@ -1,8 +1,8 @@
 {
   "name": "usemultiplestate",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A custom React hook to manage multiple states",
-  "main": "src/useMultipleState.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
     "test": "vitest",

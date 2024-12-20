@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export function useMultipleState (initialStates) {
+const useMultipleState = (initialStates) => {
   const [states, setStates] = useState(initialStates)
 
   const getStateManager = (key) => {
@@ -104,4 +104,4 @@ export function useMultipleState (initialStates) {
   }
 }
 
-module.exports.default = useMultipleState
+module.exports = useMultipleState
