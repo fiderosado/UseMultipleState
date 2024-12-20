@@ -104,4 +104,9 @@ const useMultipleState = (initialStates) => {
   }
 }
 
-module.exports = useMultipleState
+export default useMultipleState
+
+// Comandos relevantes:
+// - Para construir el proyecto: npm run build
+// - Para ejecutar tests: npm jest
+// - Para publicar: npm publish
