@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function useMultipleState (initialStates) {
+export function useMultipleState (initialStates) {
   const [states, setStates] = useState(initialStates)
 
   const getStateManager = (key) => {
