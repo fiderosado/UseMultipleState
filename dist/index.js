@@ -122,7 +122,7 @@ var useMultipleState = function useMultipleState(initialStates) {
             var newValue;
             if (typeof valueOrUpdater === 'function') {
               newValue = valueOrUpdater(currentValue);
-            } else if (_typeof(currentValue) === 'object' && currentValue !== null && _typeof(valueOrUpdater) === 'object' && valueOrUpdater !== null) {
+            } else if (_typeof(currentValue) === 'object' && currentValue !== null && _typeof(valueOrUpdater) === 'object' && valueOrUpdater !== null && !Array.isArray(valueOrUpdater)) {
               // Mezclar objetos
               newValue = _objectSpread2(_objectSpread2({}, currentValue), valueOrUpdater);
             } else {
