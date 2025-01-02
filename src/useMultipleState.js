@@ -11,13 +11,15 @@ const useMultipleState = (initialStates) => {
           if (key) {
             const currentValue = prev[key]
             let newValue
+
             if (typeof valueOrUpdater === 'function') {
               newValue = valueOrUpdater(currentValue)
             } else if (
               typeof currentValue === 'object' &&
               currentValue !== null &&
               typeof valueOrUpdater === 'object' &&
-              valueOrUpdater !== null
+              valueOrUpdater !== null &&
+              !Array.isArray(valueOrUpdater)
             ) {
               // Mezclar objetos
               newValue = { ...currentValue, ...valueOrUpdater }

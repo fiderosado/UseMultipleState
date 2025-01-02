@@ -1,6 +1,6 @@
 {
   "name": "usemultiplestate",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A React hook for managing multiple states",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
