@@ -1,6 +1,6 @@
 {
   "name": "usemultiplestate",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "A React hook for managing multiple states",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -32,7 +32,7 @@
   "homepage": "https://github.com/fiderosado/UseMultipleState#readme",
   "license": "MIT",
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
