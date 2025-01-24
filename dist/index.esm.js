@@ -101,66 +101,76 @@ function _unsupportedIterableToArray(r, a) {
   }
 }
 
+/***
+ * UseMultipleState is a powerful hook that allows you to manage multiple states in a single hook.
+ * @param initialStates
+ * @returns {(function(): *)|putAll|{getAll: ((function(*): ({[p: string]: *}))|*), state: {}}|((function(): null) & {get: (function(): null), put: put})}
+ */
 var useMultipleState = function useMultipleState(initialStates) {
   var _useState = useState(initialStates),
     _useState2 = _slicedToArray(_useState, 2),
     states = _useState2[0],
     setStates = _useState2[1];
-  var getStateManager = function getStateManager(key) {
-    var methods = {
-      get: function get() {
-        return key ? states[key] : _objectSpread2({}, states);
-      },
-      put: function put(valueOrUpdater, callback) {
-        setStates(function (prev) {
-          if (key) {
-            var currentValue = prev[key];
-            var newValue;
-            if (typeof valueOrUpdater === 'function') {
-              newValue = valueOrUpdater(currentValue);
-            } else if (_typeof(currentValue) === 'object' && currentValue !== null && _typeof(valueOrUpdater) === 'object' && valueOrUpdater !== null && !Array.isArray(valueOrUpdater)) {
-              // Mezclar objetos
-              newValue = _objectSpread2(_objectSpread2({}, currentValue), valueOrUpdater);
-            } else {
-              newValue = valueOrUpdater;
-            }
-            var result = _objectSpread2(_objectSpread2({}, prev), {}, _defineProperty({}, key, newValue));
-            if (callback) callback(result[key]); // Ejecutar callback con el nuevo valor
-            return result;
-          } else {
-            // Actualizar múltiples claves
-            if (_typeof(valueOrUpdater) !== 'object' || valueOrUpdater === null) {
-              throw new Error('Para actualizar todo el estado, debe proporcionarse un objeto o Clave de objeto para actualizar una especifica.');
-            }
-            var validUpdates = Object.keys(valueOrUpdater).reduce(function (result, updateKey) {
-              if (updateKey in prev) {
-                result[updateKey] = valueOrUpdater[updateKey];
-              }
-              return result;
-            }, {});
-            return _objectSpread2(_objectSpread2({}, prev), validUpdates);
-          }
-        });
-      }
+  /***
+   * createStateManager is a helper function that creates a state manager for a specific key.
+   * @param key
+   * @returns {{get: ((function(): (function()))|*), value: *, put: put}}
+   */
+  var createStateManager = function createStateManager(key) {
+    var value = states[key];
+    var put = function put(valueOrUpdater, callback) {
+      setStates(function (prev) {
+        var currentValue = prev[key];
+        var newValue;
+        if (typeof valueOrUpdater === "function") {
+          newValue = valueOrUpdater(currentValue);
+        } else if (_typeof(currentValue) === "object" && currentValue !== null && _typeof(valueOrUpdater) === "object" && valueOrUpdater !== null && !Array.isArray(valueOrUpdater)) {
+          newValue = _objectSpread2(_objectSpread2({}, currentValue), valueOrUpdater);
+        } else {
+          newValue = valueOrUpdater;
+        }
+        var updatedState = _objectSpread2(_objectSpread2({}, prev), {}, _defineProperty({}, key, newValue));
+        if (callback) callback(updatedState[key]);
+        return updatedState;
+      });
     };
-    return new Proxy(methods, {
-      get: function get(target, prop) {
-        if (prop in target) {
-          return target[prop];
+    return {
+      value: value,
+      get: function get() {
+        if (!(key in states)) {
+          console.warn("La clave \"".concat(key, "\" no existe en el estado."));
+          return function () {};
         }
-        // Si no se llama un método, devuelve directamente el valor
-        if (prop === Symbol.toPrimitive || prop === 'valueOf') {
-          return function () {
-            return target.get();
-          };
-        }
-        return target.get();
+        console.log("este es el valor", key, value);
+        return value;
       },
-      apply: function apply(target, thisArg, args) {
-        return target.get(); // Devuelve el valor por defecto si se usa como función
+      put: put
+    };
+  };
+  /***
+   * putAll is a function that allows you to update multiple states at once.
+   * @param valueOrUpdater
+   * @param callback
+   */
+  var putAll = function putAll(valueOrUpdater, callback) {
+    setStates(function (prev) {
+      var newState;
+      if (typeof valueOrUpdater === "function") {
+        newState = valueOrUpdater(prev);
+      } else if (_typeof(valueOrUpdater) === "object" && valueOrUpdater !== null) {
+        newState = _objectSpread2(_objectSpread2({}, prev), valueOrUpdater);
+      } else {
+        throw new Error("Para actualizar todo el estado, debe proporcionarse un objeto o Clave de objeto para actualizar una especifica.");
       }
+      if (callback) callback(newState);
+      return newState;
     });
   };
+  /***
+   * getAll is a function that allows you to get all the states or specific states.
+   * @param keys
+   * @returns {{[p: string]: *}|*}
+   */
   var getAll = function getAll(keys) {
     if (!keys) {
       return _objectSpread2({}, states);
@@ -177,22 +187,64 @@ var useMultipleState = function useMultipleState(initialStates) {
       return result;
     }, {});
   };
-  var state = function state(key) {
-    if (key && !(key in states)) {
-      throw new Error("El estado con clave \"".concat(key, "\" no existe."));
+  /***
+   * state is a proxy object that allows you to get and update the states.
+   * @type {{}}
+   */
+  var state = new Proxy({}, {
+    /***
+     * get is a trap that allows you to get the states.
+     * @param _
+     * @param prop
+     * @returns {(function(): *)|putAll|((function(): null) & {get: (function(): null), put: put})}
+     */
+    get: function get(_, prop) {
+      if (prop === "put") {
+        return putAll;
+      }
+      if (prop in states) {
+        var _createStateManager = createStateManager(prop),
+          value = _createStateManager.value,
+          put = _createStateManager.put,
+          get = _createStateManager.get;
+        /***
+         * getterFunction is a function that allows you to get and update the specific state.
+         */
+        var getterFunction = function getterFunction() {
+          return value;
+        };
+        /***
+         * put is a function that allows you to update the specific state.
+         * @type {put}
+         */
+        getterFunction.put = put;
+        /***
+         * get is a function that allows you to get the specific state.
+         * @type {(function(): function())|*}
+         */
+        getterFunction.get = get;
+        return getterFunction;
+      }
+      /***
+       * defaultValue is a function that returns null if the state does not exist.
+       * @type {(function(): null) & {get: (function(): null), put: defaultValue.put}}
+       */
+      var defaultValue = Object.assign(function () {
+        return null;
+      }, {
+        get: function get() {
+          return null;
+        },
+        put: function put() {}
+      });
+      return defaultValue;
     }
-    return getStateManager(key);
-  };
+  });
   return {
     state: state,
     getAll: getAll
   };
 };
-
-// Comandos relevantes:
-// - Para construir el proyecto: npm run build
-// - Para ejecutar tests: npm jest
-// - Para publicar: npm publish
 
 export { useMultipleState as default };
 //# sourceMappingURL=index.esm.js.map

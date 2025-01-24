@@ -13,11 +13,11 @@ const useMultipleState = (initialStates) => {
    * @returns {{get: ((function(): (function()))|*), value: *, put: put}}
    */
   const createStateManager = (key) => {
-    const value = states[key];
     const put = (valueOrUpdater, callback) => {
       setStates((prev) => {
         const currentValue = prev[key];
         let newValue;
+
         if (typeof valueOrUpdater === "function") {
           newValue = valueOrUpdater(currentValue);
         } else if (
@@ -31,20 +31,27 @@ const useMultipleState = (initialStates) => {
         } else {
           newValue = valueOrUpdater;
         }
+
+        if (JSON.stringify(prev) === JSON.stringify(newValue)) {
+          return prev;
+        }
+
         const updatedState = { ...prev, [key]: newValue };
+
         if (callback) callback(updatedState[key]);
         return updatedState;
       });
     };
     return {
-      value,
+      value : !(key in states) ? null : states[key] ,
       get: () => {
         if (!(key in states)) {
           console.warn(`La clave "${key}" no existe en el estado.`);
-          return ()=> {}
+          return () => {
+            return null;
+          }
         }
-        console.log("este es el valor" , key , value)
-        return value
+        return states[key]
       },
       put,
     };

@@ -13,7 +13,7 @@ Documentación disponible en:
 - [English](docs/en/README.md)
 - [Español](docs/es/README.md)
 
-# LATEST VERSION 1.1.1 
+# LATEST VERSION ^1.1.x
 - [Español](docs/latest/README.md)
 
 # Author
