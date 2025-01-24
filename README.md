@@ -8,8 +8,13 @@
 
 Documentación disponible en:
 
+# DOWN VERSION 1.1.1
+
 - [English](docs/en/README.md)
 - [Español](docs/es/README.md)
+
+# LATEST VERSION 1.1.1 
+- [Español](docs/latest/README.md)
 
 # Author
 [<img src="https://avatars.githubusercontent.com/u/15683590?v=4?size=115" width=115>
