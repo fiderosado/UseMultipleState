@@ -19,7 +19,7 @@ const useMultipleState = (initialStates) => {
         let newValue;
 
         if (typeof valueOrUpdater === "function") {
-          newValue = valueOrUpdater(currentValue);
+          newValue = valueOrUpdater(prev);
         } else if (
             typeof currentValue === "object" &&
             currentValue !== null &&
@@ -119,7 +119,6 @@ const useMultipleState = (initialStates) => {
             return putAll;
           }
           if (prop in states) {
-
             const { value, put , get } = createStateManager(prop);
             /***
              * getterFunction is a function that allows you to get and update the specific state.

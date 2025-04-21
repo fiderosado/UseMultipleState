@@ -117,7 +117,6 @@ var useMultipleState = function useMultipleState(initialStates) {
    * @returns {{get: ((function(): (function()))|*), value: *, put: put}}
    */
   var createStateManager = function createStateManager(key) {
-    var value = states[key];
     var put = function put(valueOrUpdater, callback) {
       setStates(function (prev) {
         var currentValue = prev[key];
@@ -129,20 +128,24 @@ var useMultipleState = function useMultipleState(initialStates) {
         } else {
           newValue = valueOrUpdater;
         }
+        if (JSON.stringify(prev) === JSON.stringify(newValue)) {
+          return prev;
+        }
         var updatedState = _objectSpread2(_objectSpread2({}, prev), {}, _defineProperty({}, key, newValue));
         if (callback) callback(updatedState[key]);
         return updatedState;
       });
     };
     return {
-      value: value,
+      value: !(key in states) ? null : states[key],
       get: function get() {
         if (!(key in states)) {
           console.warn("La clave \"".concat(key, "\" no existe en el estado."));
-          return function () {};
+          return function () {
+            return null;
+          };
         }
-        console.log("este es el valor", key, value);
-        return value;
+        return states[key];
       },
       put: put
     };
