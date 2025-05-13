@@ -122,7 +122,7 @@ var useMultipleState = function useMultipleState(initialStates) {
         var currentValue = prev[key];
         var newValue;
         if (typeof valueOrUpdater === "function") {
-          newValue = valueOrUpdater(currentValue);
+          newValue = valueOrUpdater(prev);
         } else if (_typeof(currentValue) === "object" && currentValue !== null && _typeof(valueOrUpdater) === "object" && valueOrUpdater !== null && !Array.isArray(valueOrUpdater)) {
           newValue = _objectSpread2(_objectSpread2({}, currentValue), valueOrUpdater);
         } else {

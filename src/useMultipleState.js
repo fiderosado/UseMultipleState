@@ -157,6 +157,7 @@ const useMultipleState = (initialStates) => {
   );
   return {
     state,
+    states,
     getAll
   };
 };
