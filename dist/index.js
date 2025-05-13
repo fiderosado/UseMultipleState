@@ -249,6 +249,7 @@ var useMultipleState = function useMultipleState(initialStates) {
   });
   return {
     state: state,
+    states: states,
     getAll: getAll
   };
 };
