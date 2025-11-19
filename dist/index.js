@@ -125,9 +125,9 @@ var useMultipleState = function useMultipleState(initialStates) {
       setStates(function (prev) {
         var currentValue = prev[key];
         var newValue;
-        if (typeof valueOrUpdater === "function") {
+        if (typeof valueOrUpdater === 'function') {
           newValue = valueOrUpdater(prev);
-        } else if (_typeof(currentValue) === "object" && currentValue !== null && _typeof(valueOrUpdater) === "object" && valueOrUpdater !== null && !Array.isArray(valueOrUpdater)) {
+        } else if (_typeof(currentValue) === 'object' && currentValue !== null && _typeof(valueOrUpdater) === 'object' && valueOrUpdater !== null && !Array.isArray(valueOrUpdater)) {
           newValue = _objectSpread2(_objectSpread2({}, currentValue), valueOrUpdater);
         } else {
           newValue = valueOrUpdater;
@@ -162,12 +162,12 @@ var useMultipleState = function useMultipleState(initialStates) {
   var putAll = function putAll(valueOrUpdater, callback) {
     setStates(function (prev) {
       var newState;
-      if (typeof valueOrUpdater === "function") {
+      if (typeof valueOrUpdater === 'function') {
         newState = valueOrUpdater(prev);
-      } else if (_typeof(valueOrUpdater) === "object" && valueOrUpdater !== null) {
+      } else if (_typeof(valueOrUpdater) === 'object' && valueOrUpdater !== null) {
         newState = _objectSpread2(_objectSpread2({}, prev), valueOrUpdater);
       } else {
-        throw new Error("Para actualizar todo el estado, debe proporcionarse un objeto o Clave de objeto para actualizar una especifica.");
+        throw new Error('Para actualizar todo el estado, debe proporcionarse un objeto o Clave de objeto para actualizar una especifica.');
       }
       if (callback) callback(newState);
       return newState;
@@ -206,7 +206,7 @@ var useMultipleState = function useMultipleState(initialStates) {
      * @returns {(function(): *)|putAll|((function(): null) & {get: (function(): null), put: put})}
      */
     get: function get(_, prop) {
-      if (prop === "put") {
+      if (prop === 'put') {
         return putAll;
       }
       if (prop in states) {
@@ -237,10 +237,10 @@ var useMultipleState = function useMultipleState(initialStates) {
        * @type {(function(): null) & {get: (function(): null), put: defaultValue.put}}
        */
       var defaultValue = Object.assign(function () {
-        return null;
+        return states;
       }, {
         get: function get() {
-          return null;
+          return states;
         },
         put: function put() {}
       });
