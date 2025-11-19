@@ -16,7 +16,7 @@ describe('Test UseMultipleState Hook', () => {
       expect(updatedState).toEqual({ a: 1, b: 3, c: 4 })
       expect(allData).toEqual({ key1: { a: 1, b: 3, c: 4 }, key2: 42, key3: true })
     })
-   it('Cambiar "key1" por un nuevo valor  : state.key1.put(\'newValue2\') , expected : \'newValue2\' ', () => {
+    it('Cambiar "key1" por un nuevo valor  : state.key1.put(\'newValue2\') , expected : \'newValue2\' ', () => {
       const initialStates = { key1: 'value1', key2: 42 }
       const { result } = renderHook(() => useMultipleState(initialStates))
       act(() => {
@@ -47,6 +47,13 @@ describe('Test UseMultipleState Hook', () => {
 
   describe('Accediendo al estado de objetos : Estado inicial = { key1: { a: 1, b: 2 }, key2: 42 , key3: true } ', () => {
 
+    it('Obteniendo "state" en el StateManager con metodo "get()" ', () => {
+      const initialStates = { key1: 'value1', key2: 42 }
+      const { result } = renderHook(() => useMultipleState(initialStates))
+      const allData = result.current.state.get()
+      expect(allData).toEqual(initialStates)
+    })
+
     it('Obteniendo "ALL" en el StateManager con metodo "getAll()" ', () => {
       const initialStates = { key1: 'value1', key2: 42 }
       const { result } = renderHook(() => useMultipleState(initialStates))
@@ -64,13 +71,13 @@ describe('Test UseMultipleState Hook', () => {
     it('Obteniendo "key1, key2" con metodo "state.key()", sin el metodo .get(): expected : key1: toBe(\'value1\') , key2: toBe(42)', () => {
       const initialStates = { count: 2, name: 'John' }
       const { result } = renderHook(() => useMultipleState(initialStates))
-      expect(result.current.state.name()).toBe('John' )
-       act(() => {
-          result.current.state.name.put('Jane')
-       })
-       expect(result.current.state.name()).toBe('Jane')
+      expect(result.current.state.name()).toBe('John')
+      act(() => {
+        result.current.state.name.put('Jane')
+      })
+      expect(result.current.state.name()).toBe('Jane')
       const allData = result.current.getAll()
-       expect(allData).toEqual({ count: 2, name: 'Jane' })
+      expect(allData).toEqual({ count: 2, name: 'Jane' })
     })
 
     /*it('Obteniendo "key1, key2" con metodo "state.key", sin el metodo .get(): expected : key1: toBe(\'value1\') , key2: toBe(42)', () => {
@@ -87,15 +94,14 @@ describe('Test UseMultipleState Hook', () => {
     it('Generar "error" al acceder a una clave inexistente: state.key4() (key4 no exist : null)', () => {
       const initialStates = { key1: { a: 1, b: 2 }, key2: 42, key3: true }
       const { result } = renderHook(() => useMultipleState(initialStates))
-      expect(result.current.state.key4()).toBe(null )
+      expect(result.current.state.key4()).toBe(null)
     })
 
     it('Generar "error" al acceder a una clave inexistente: state.key4.get() (key4 no exist : null)', () => {
       const initialStates = { key1: { a: 1, b: 2 }, key2: 42, key3: true }
       const { result } = renderHook(() => useMultipleState(initialStates))
-      expect(result.current.state.key4.get()).toBe(null )
+      expect(result.current.state.key4.get()).toBe(null)
     })
-
 
     it('Obteniendo estados específicos con getAll con metodo "toEqual" : getAll([\'key1\', \'key3\']) , expected : toEqual({ key1: { a: 1, b: 2 }, key3: true })', () => {
       const initialStates = { key1: { a: 1, b: 2 }, key2: 42, key3: true }
@@ -104,7 +110,7 @@ describe('Test UseMultipleState Hook', () => {
       expect(selectedStates).toEqual({ key1: { a: 1, b: 2 }, key3: true })
     })
 
-   it('Generar "error" si se llama a getAll con un argumento que no sea una matriz : getAll(\'key1\') , expected : toThrowError(debe ser array de claves)', () => {
+    it('Generar "error" si se llama a getAll con un argumento que no sea una matriz : getAll(\'key1\') , expected : toThrowError(debe ser array de claves)', () => {
       const initialStates = { key1: { a: 1, b: 2 }, key2: 42, key3: true }
       const { result } = renderHook(() => useMultipleState(initialStates))
       expect(() => {
