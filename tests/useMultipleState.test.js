@@ -91,16 +91,16 @@ describe('Test UseMultipleState Hook', () => {
       // expect(allData).toEqual(initialStates)
     })*/
 
-    it('Generar "error" al acceder a una clave inexistente: state.key4() (key4 no exist : null)', () => {
+    it('Acceder a una clave inexistente: state.key4() (key4 no existe) devuelve el states completo', () => {
       const initialStates = { key1: { a: 1, b: 2 }, key2: 42, key3: true }
       const { result } = renderHook(() => useMultipleState(initialStates))
-      expect(result.current.state.key4()).toBe(null)
+      expect(result.current.state.key4()).toEqual(initialStates)
     })
 
-    it('Generar "error" al acceder a una clave inexistente: state.key4.get() (key4 no exist : null)', () => {
+    it('Acceder a una clave inexistente: state.key4.get() (key4 no existe) devuelve el states completo', () => {
       const initialStates = { key1: { a: 1, b: 2 }, key2: 42, key3: true }
       const { result } = renderHook(() => useMultipleState(initialStates))
-      expect(result.current.state.key4.get()).toBe(null)
+      expect(result.current.state.key4.get()).toEqual(initialStates)
     })
 
     it('Obteniendo estados específicos con getAll con metodo "toEqual" : getAll([\'key1\', \'key3\']) , expected : toEqual({ key1: { a: 1, b: 2 }, key3: true })', () => {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 function _arrayLikeToArray(r, a) {
   (null == a || a > r.length) && (a = r.length);
@@ -192,57 +192,61 @@ var useMultipleState = function useMultipleState(initialStates) {
   };
   /***
    * state is a proxy object that allows you to get and update the states.
+   * Wrapped in useMemo so the Proxy reference stays stable between renders
+   * and only rebuilds when `states` actually changes.
    * @type {{}}
    */
-  var state = new Proxy({}, {
-    /***
-     * get is a trap that allows you to get the states.
-     * @param _
-     * @param prop
-     * @returns {(function(): *)|putAll|((function(): null) & {get: (function(): null), put: put})}
-     */
-    get: function get(_, prop) {
-      if (prop === 'put') {
-        return putAll;
-      }
-      if (prop in states) {
-        var _createStateManager = createStateManager(prop),
-          value = _createStateManager.value,
-          put = _createStateManager.put,
-          get = _createStateManager.get;
-        /***
-         * getterFunction is a function that allows you to get and update the specific state.
-         */
-        var getterFunction = function getterFunction() {
-          return value;
-        };
-        /***
-         * put is a function that allows you to update the specific state.
-         * @type {put}
-         */
-        getterFunction.put = put;
-        /***
-         * get is a function that allows you to get the specific state.
-         * @type {(function(): function())|*}
-         */
-        getterFunction.get = get;
-        return getterFunction;
-      }
+  var state = useMemo(function () {
+    return new Proxy({}, {
       /***
-       * defaultValue is a function that returns null if the state does not exist.
-       * @type {(function(): null) & {get: (function(): null), put: defaultValue.put}}
+       * get is a trap that allows you to get the states.
+       * @param _
+       * @param prop
+       * @returns {(function(): *)|putAll|((function(): null) & {get: (function(): null), put: put})}
        */
-      var defaultValue = Object.assign(function () {
-        return states;
-      }, {
-        get: function get() {
+      get: function get(_, prop) {
+        if (prop === 'put') {
+          return putAll;
+        }
+        if (prop in states) {
+          var _createStateManager = createStateManager(prop),
+            value = _createStateManager.value,
+            put = _createStateManager.put,
+            get = _createStateManager.get;
+          /***
+           * getterFunction is a function that allows you to get and update the specific state.
+           */
+          var getterFunction = function getterFunction() {
+            return value;
+          };
+          /***
+           * put is a function that allows you to update the specific state.
+           * @type {put}
+           */
+          getterFunction.put = put;
+          /***
+           * get is a function that allows you to get the specific state.
+           * @type {(function(): function())|*}
+           */
+          getterFunction.get = get;
+          return getterFunction;
+        }
+        /***
+         * defaultValue is a function that returns null if the state does not exist.
+         * @type {(function(): null) & {get: (function(): null), put: defaultValue.put}}
+         */
+        var defaultValue = Object.assign(function () {
           return states;
-        },
-        put: function put() {}
-      });
-      return defaultValue;
-    }
-  });
+        }, {
+          get: function get() {
+            return states;
+          },
+          put: function put() {}
+        });
+        return defaultValue;
+      }
+    });
+  }, [states]);
   return {
     state: state,
     states: states,

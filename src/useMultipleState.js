@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 
 /***
  * UseMultipleState is a powerful hook that allows you to manage multiple states in a single hook.
@@ -103,9 +103,11 @@ const useMultipleState = (initialStates) => {
   }
   /***
    * state is a proxy object that allows you to get and update the states.
+   * Wrapped in useMemo so the Proxy reference stays stable between renders
+   * and only rebuilds when `states` actually changes.
    * @type {{}}
    */
-  const state = new Proxy(
+  const state = useMemo(() => new Proxy(
     {},
     {
       /***
@@ -154,7 +156,7 @@ const useMultipleState = (initialStates) => {
         return defaultValue
       },
     }
-  )
+  ), [states])
   return {
     state,
     states,
