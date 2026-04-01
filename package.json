@@ -41,12 +41,12 @@
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
-    "rollup": "^2.56.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
-    "vitest": "^2.1.8",
     "jsdom": "^25.0.1",
-    "standard": "^17.1.2"
+    "rollup": "^2.56.3",
+    "standard": "^17.1.2",
+    "vitest": "^4.1.2"
   },
   "eslintConfig": {
     "extends": "./node_modules/standard/eslintrc.json"
